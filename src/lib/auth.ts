@@ -28,17 +28,17 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email a heslo sú povinné')
+          throw new Error('Email a heslo su povinna')
         }
         const user = await db.user.findUnique({
           where: { email: credentials.email.toLowerCase() },
         })
         if (!user || !user.password) {
-          throw new Error('Nesprávny email alebo heslo')
+          throw new Error('Nespravny email alebo heslo')
         }
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
         if (!isPasswordValid) {
-          throw new Error('Nesprávny email alebo heslo')
+          throw new Error('Nespravny email alebo heslo')
         }
         return { id: user.id, email: user.email, name: user.name, image: user.image }
       },
@@ -80,4 +80,3 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT { sub: string; plan?: string }
 }
-```
