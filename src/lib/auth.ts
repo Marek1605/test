@@ -9,11 +9,10 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as any,
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: '/login',
-    signUp: '/register',
     error: '/login',
   },
   providers: [
@@ -31,24 +30,19 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email a heslo sú povinné')
         }
-
         const user = await db.user.findUnique({
           where: { email: credentials.email.toLowerCase() },
         })
-
         if (!user || !user.password) {
           throw new Error('Nesprávny email alebo heslo')
         }
-
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
         )
-
         if (!isPasswordValid) {
           throw new Error('Nesprávny email alebo heslo')
         }
-
         return {
           id: user.id,
           email: user.email,
@@ -72,19 +66,16 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.sub = user.id
-        // Fetch user plan
         const dbUser = await db.user.findUnique({
           where: { id: user.id },
           select: { plan: true },
         })
         token.plan = dbUser?.plan || 'FREE'
       }
-      
       if (trigger === 'update' && session) {
         token.name = session.name
         token.email = session.email
       }
-      
       return token
     },
   },
@@ -92,14 +83,12 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, isNewUser }) {
       if (isNewUser) {
         console.log(`New user signed up: ${user.email}`)
-        // TODO: Send welcome email
       }
     },
   },
   debug: process.env.NODE_ENV === 'development',
 }
 
-// Extend next-auth types
 declare module 'next-auth' {
   interface Session {
     user: {
@@ -118,3 +107,18 @@ declare module 'next-auth/jwt' {
     plan?: string
   }
 }
+```
+
+---
+
+### Postup:
+
+1. **Vymaž všetko** v `auth.ts`
+2. **Vlož tento kód**
+3. **Ulož (Ctrl+S)**
+4. **Pushni:**
+```
+cd /root
+git add src/lib/auth.ts
+git commit -m "Fix auth"
+git push origin main
