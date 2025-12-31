@@ -81,12 +81,3 @@ declare module 'next-auth/jwt' {
   interface JWT { sub: string; plan?: string }
 }
 ```
-
----
-
-### Potom:
-```
-cd /root
-git add src/lib/auth.ts
-git commit -m "Fix auth clean"
-git push origin main
