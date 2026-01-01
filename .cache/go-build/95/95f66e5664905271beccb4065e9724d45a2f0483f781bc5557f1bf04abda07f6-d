@@ -1,0 +1,11 @@
+./client.go
+./client_index.go
+./client_request.go
+./error.go
+./index.go
+./index_documents.go
+./index_search.go
+./index_settings.go
+./types.go
+./types_easyjson.go
+./version.go
